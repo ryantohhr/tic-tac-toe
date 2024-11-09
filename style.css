@@ -1,0 +1,86 @@
+*, *::before, *::after {
+    box-sizing: border-box;
+  }
+  * {
+    margin: 0;
+  }
+  body {
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+  img, picture, video, canvas, svg {
+    display: block;
+    max-width: 100%;
+  }
+  input, button, textarea, select {
+    font: inherit;
+  }
+  p, h1, h2, h3, h4, h5, h6 {
+    overflow-wrap: break-word;
+  }
+  p {
+    text-wrap: pretty;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    text-wrap: balance;
+  }
+  #root, #__next {
+    isolation: isolate;
+  }
+
+  html, body {
+    height: 100%;
+  }
+
+body {
+    font-family: ubuntu;
+}
+
+.title {
+    font-size: 5rem;
+    text-align: center;
+}
+
+.main {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    align-items: center;
+    justify-content: flex-start;
+    width: 100vw;
+}
+
+.board {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+    place-items: center;
+    min-width: 40%;
+    min-height: 50%;
+}
+
+.board > div {
+    background-color: #ffffff;
+    height: 100%;
+    width: 100%;
+    border: solid 2px black;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.board div svg {
+    color: black;
+    height: 5rem;
+}
+
+.winner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.winner > div > svg {
+    height: 2rem;
+    display: inline;
+}

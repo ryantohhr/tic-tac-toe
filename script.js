@@ -92,12 +92,15 @@ const gameboard = (function() {
         checkColumns();
         checkDiagonals();
         if (winner) {
-            return winner;
+            DOMGenerator.showWinner(winner);
         }
     }
     
+    function resetWinner() {
+        winner = null;
+    }
 
-    return { board, placeMarker, printBoard, resetBoard, checkGame }
+    return { board, placeMarker, printBoard, resetBoard, checkGame, resetWinner }
 })();
 
 
@@ -115,10 +118,7 @@ function Cell() {
     }
 
     function placeMarker(player) {
-        if (digit) {
-            console.log("Cell already occupied.");
-        }
-        else {
+        if (!digit) {
             digit = player;
         }
     }
@@ -136,25 +136,100 @@ function Cell() {
 // => Should return: Place marker function, Current player funtion
 
 const gameController = (function() {
-    let players = [1, 2];
-
     let currentPlayer = 1;
+
+    function resetPlayer() {
+        currentPlayer = 1;
+    }
 
     function switchPlayer() {
         currentPlayer = currentPlayer === 1 ? 2 : 1;
     }
 
-    function playRound(cell) {
-        gameboard.placeMarker(currentPlayer, cell);
-        switchPlayer();
-        gameboard.checkGame();
-        gameboard.printBoard();
+    function playRound(cell, grid) {
+        if (gameboard.board[cell[0]][cell[1]].getDigit()) {
+        }
+        else {
+            gameboard.placeMarker(currentPlayer, cell);
+            gameboard.printBoard();
+            DOMGenerator.changeBoard(grid);
+            gameboard.checkGame();
+            switchPlayer();
+        }
     }
 
     function getCurrentPlayer() {
-        console.log(currentPlayer);
+        return currentPlayer;
     }
 
-    return { playRound, getCurrentPlayer }
+    function resetGame() {
+        gameboard.resetBoard();
+        resetPlayer();
+        DOMGenerator.renderBoard();
+        DOMGenerator.removeWinner();
+        gameboard.resetWinner();
+    }
+
+    return { playRound, getCurrentPlayer, resetGame }
 })();
 
+const DOMGenerator = (function() {
+
+    const winnerDisplay = document.querySelector(".winner");
+    const board = document.querySelector(".board");
+
+    function renderBoard() {
+        while (board.firstChild) {
+            board.removeChild(board.firstChild);
+        }
+        for (let i = 0; i < 3; i++) {
+            for (let j = 0; j < 3; j++) {
+                const grid = document.createElement("div");
+                const gridID = `${i}${j}`;
+                const cell = [i, j]
+                grid.setAttribute("id", gridID);
+                grid.addEventListener('click', () => gameController.playRound(cell, grid))
+                board.appendChild(grid);
+            }
+        }
+    }
+
+    function changeBoard(grid) {
+        if (gameController.getCurrentPlayer() === 1 && !grid.innerHTML) {
+            grid.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><title>X</title><path d="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z" /></svg>';
+        }
+        else if (gameController.getCurrentPlayer() === 2  && !grid.innerHTML) {
+            grid.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><title>O</title><path d="M12,20A8,8 0 0,1 4,12A8,8 0 0,1 12,4A8,8 0 0,1 20,12A8,8 0 0,1 12,20M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z" /></svg>';
+        }
+    }
+
+    function showWinner(winner) {
+        const winnerText = document.createElement("div");
+        switch (winner) {
+            case 1:
+                winnerText.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><title>X</title><path d="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z" /></svg> wins!';
+                break;
+            case 2:
+                winnerText.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><title>O</title><path d="M12,20A8,8 0 0,1 4,12A8,8 0 0,1 12,4A8,8 0 0,1 20,12A8,8 0 0,1 12,20M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z" /></svg> wins!';
+        }
+        winnerText.style.cssText = "font-size: 2rem; display: flex; align-items:center; gap: 8px";
+
+        const winnerBtn = document.createElement("button");
+        winnerBtn.textContent = "Play Again"
+        winnerBtn.addEventListener('click', () => {
+            gameController.resetGame();
+        });
+
+        winnerDisplay.append(winnerText, winnerBtn);
+    }
+
+    function removeWinner() {
+        while (winnerDisplay.firstChild) {
+            winnerDisplay.removeChild(winnerDisplay.firstChild);
+        }
+    }
+
+    return { renderBoard, changeBoard, showWinner, removeWinner };
+})();
+
+DOMGenerator.renderBoard();

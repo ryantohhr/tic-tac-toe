@@ -14,6 +14,14 @@ const gameboard = (function() {
         }
     }
 
+    function placeMarker(player, cell) {
+        board[cell[0]][cell[1]].placeMarker(player);
+    }
+
+    function printBoard() {
+        console.log(board);
+    }
+
     function resetBoard() {
         for (let i = 0; i < 3; i++) {
             for (let j = 0; j < 3; j++) {
@@ -22,14 +30,26 @@ const gameboard = (function() {
         }
     }
 
-    return { board, resetBoard }
-})
+    return { board, placeMarker, printBoard, resetBoard }
+})();
 
 
 // Cell
 // => Factory function
 // => Start: 0, PLayer 1: 1, PLayer 2: 2
-// => Should return: cell(number), Place marker function, Read marker function, reset cell function
+// => Should return: digit, Place marker function
+// => (Maybe) Read marker function, reset cell function
+
+function Cell() {
+    let digit = 0;
+
+    function placeMarker(player) {
+        digit = player;
+    }
+
+    return { digit, placeMarker }
+}
+
 
 // Players (objects) 
 // => Factory function

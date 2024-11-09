@@ -5,11 +5,24 @@
 // => return board, reset board function
 
 const gameboard = (function() {
-    const rows = 3;
-    const columns = 3;
     const board = [];
 
-    resetBoard()
+    for (let i = 0; i < 3; i++) {
+        board[i] = [];
+        for (let j = 0; j < 3; j++) {
+            board[i].push(Cell());
+        }
+    }
+
+    function resetBoard() {
+        for (let i = 0; i < 3; i++) {
+            for (let j = 0; j < 3; j++) {
+                board[i][j] = Cell();
+            }
+        }
+    }
+
+    return { board, resetBoard }
 })
 
 

@@ -84,3 +84,10 @@ body {
     height: 2rem;
     display: inline;
 }
+
+.winner > button {
+    border-radius: 10px;
+    border: none;
+    background-color: #dbc1c1;
+    padding: 10px 30px;
+}

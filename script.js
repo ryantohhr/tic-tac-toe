@@ -93,6 +93,7 @@ const gameboard = (function() {
         checkDiagonals();
         if (winner) {
             DOMGenerator.showWinner(winner);
+            DOMGenerator.endGame();
         }
     }
     
@@ -185,10 +186,8 @@ const DOMGenerator = (function() {
         for (let i = 0; i < 3; i++) {
             for (let j = 0; j < 3; j++) {
                 const grid = document.createElement("div");
-                const gridID = `${i}${j}`;
-                const cell = [i, j]
-                grid.setAttribute("id", gridID);
-                grid.addEventListener('click', () => gameController.playRound(cell, grid))
+                const cell = [i, j];
+                grid.addEventListener('click', () => gameController.playRound(cell, grid));
                 board.appendChild(grid);
             }
         }
@@ -229,7 +228,14 @@ const DOMGenerator = (function() {
         }
     }
 
-    return { renderBoard, changeBoard, showWinner, removeWinner };
+    function endGame() {
+        const grids = document.querySelectorAll(".board > div");
+        grids.forEach((grid) => {
+            grid.style.cssText += "pointer-events: none;";
+        })
+    }
+
+    return { renderBoard, changeBoard, showWinner, removeWinner, endGame };
 })();
 
 DOMGenerator.renderBoard();

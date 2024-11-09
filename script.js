@@ -36,7 +36,68 @@ const gameboard = (function() {
         }
     }
 
-    return { board, placeMarker, printBoard, resetBoard }
+    function checkWinner(field) {
+        if (field.every((cell) => cell.getDigit() === 1)) {
+            return 1;
+        }
+        else if (field.every((cell) => cell.getDigit() === 2)) {
+            return 2;
+        }
+    }
+
+    let winner;
+
+    function checkRows() {
+        for (let i = 0; i < 3; i++) {
+            if (!winner) {
+                winner = checkWinner(board[i]);
+            }
+        }
+    }
+
+    function checkColumns() {
+        let column;
+        for (let i = 0; i < 3; i++) {
+            column = [];
+            for (let j = 0; j < 3; j++) {
+                column.push(board[j][i]);
+            }
+            if (!winner) {
+                winner = checkWinner(column);
+            }
+        }
+    }
+
+    function checkDiagonals() {
+        let diagonal;
+        diagonal = [];
+        for (let i = 0; i < 3; i++) {
+            
+            diagonal.push(board[i][i]);
+        }
+        if (!winner) {
+            winner = checkWinner(diagonal);
+        }
+        diagonal = [];
+        for (let i = 0; i < 3; i++) {
+            diagonal.push(board[i][2-i]);
+        }
+        if (!winner) {
+            winner = checkWinner(diagonal);
+        }
+    }
+
+    function checkGame() {
+        checkRows();
+        checkColumns();
+        checkDiagonals();
+        if (winner) {
+            return winner;
+        }
+    }
+    
+
+    return { board, placeMarker, printBoard, resetBoard, checkGame }
 })();
 
 
@@ -86,6 +147,7 @@ const gameController = (function() {
     function playRound(cell) {
         gameboard.placeMarker(currentPlayer, cell);
         switchPlayer();
+        gameboard.checkGame();
         gameboard.printBoard();
     }
 
@@ -95,3 +157,4 @@ const gameController = (function() {
 
     return { playRound, getCurrentPlayer }
 })();
+

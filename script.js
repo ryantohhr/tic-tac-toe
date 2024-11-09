@@ -19,7 +19,13 @@ const gameboard = (function() {
     }
 
     function printBoard() {
-        console.log(board);
+        displayBoard = 
+            board.map((row) => {
+                return row.map((cell) => {
+                    return cell.getDigit();
+                });
+            });
+        console.log(displayBoard);
     }
 
     function resetBoard() {
@@ -43,11 +49,15 @@ const gameboard = (function() {
 function Cell() {
     let digit = 0;
 
+    function getDigit() {
+        return digit;
+    }
+
     function placeMarker(player) {
         digit = player;
     }
 
-    return { digit, placeMarker }
+    return { getDigit, placeMarker }
 }
 
 

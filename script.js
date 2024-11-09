@@ -54,7 +54,12 @@ function Cell() {
     }
 
     function placeMarker(player) {
-        digit = player;
+        if (digit) {
+            console.log("Cell already occupied.");
+        }
+        else {
+            digit = player;
+        }
     }
 
     return { getDigit, placeMarker }
@@ -68,3 +73,25 @@ function Cell() {
 // Controller (object)
 // => IIFE
 // => Should return: Place marker function, Current player funtion
+
+const gameController = (function() {
+    let players = [1, 2];
+
+    let currentPlayer = 1;
+
+    function switchPlayer() {
+        currentPlayer = currentPlayer === 1 ? 2 : 1;
+    }
+
+    function playRound(cell) {
+        gameboard.placeMarker(currentPlayer, cell);
+        switchPlayer();
+        gameboard.printBoard();
+    }
+
+    function getCurrentPlayer() {
+        console.log(currentPlayer);
+    }
+
+    return { playRound, getCurrentPlayer }
+})();
